@@ -98,57 +98,24 @@ const Player = (() => {
     return { getActivePlayer, setNames, switchPlayer }
 })();
 
-//controls game flow
-const GameController = (() => {
-
-    let display = ScreenController();
-
-    Gameboard.printBoard();
-
-    //executed on click on the cell
-    const playRound = (rowClicked, columnClicked) => {
-        let settingValue = Gameboard.setValue(rowClicked, columnClicked);
-
-        if (settingValue === 'X' || settingValue === 'O') {
-            alert('Cell you chose already contains \'' + settingValue + '\'. Please choose a valid cell.');
-        } else {
-            Gameboard.printBoard();
-
-            display.fillCell(rowClicked, columnClicked, Player.getActivePlayer().token);
-
-            let result = Gameboard.checkForWinner();
-            if (result !== 'not over') {
-                display.showEndDialog(result === true ? Player.getActivePlayer().name : result);
-                return 0;
-            }
-
-            Player.switchPlayer();
-            display.updateCurrentPlayersName(Player.getActivePlayer().name);
-        }
-    };
-    
-    return {playRound};
-})();
-
 //manages interface
-function ScreenController() {
+const ScreenController = (() => {
 
-    const start = (() => {
-        const startDialog = document.querySelector(".start-dialog");
+    const startDialog = (() => {
+        const dialog = document.querySelector(".start-dialog");
         const form = document.querySelector('.start-dialog form');
         const namePlayerOneInput = document.querySelector('#player-1');
         const namePlayerTwoInput = document.querySelector('#player-2');
-        const startButton = document.querySelector('.start');
-        return { startDialog, form, namePlayerOneInput, namePlayerTwoInput, startButton }
+        const button = document.querySelector('.start');
+        return { dialog, form, namePlayerOneInput, namePlayerTwoInput, button }
     })();
 
     const currentPlayersName = document.querySelector('.current-players-name');
 
-    const end = (() => {
-        const endDialog = document.querySelector('.end-dialog');
-        const endMessage = document.querySelector('.message');
-        const endMessageSpan = document.querySelector('.message span');
-        return { endDialog, endMessage }
+    const endDialog = (() => {
+        const dialog = document.querySelector('.end-dialog');
+        const message = document.querySelector('.message');
+        return { dialog, message }
     })();
 
     //sets value into the item in DOM
@@ -178,19 +145,23 @@ function ScreenController() {
     document.querySelector('.restart').addEventListener('click', () => {
 
         //resets JS board
-        Gameboard.restartBoard(this);
-
+        Gameboard.restartBoard();
+        //clears the board visually
         clearBoard();
     });
 
-    //sets start button and form for entering players' names click listeners
-    start.startButton.addEventListener('click', () => {
-        start.startDialog.showModal();
+    startDialog.button.addEventListener('click', () => {
+        startDialog.dialog.showModal();
     });
 
-    start.form.addEventListener('submit', () => {
-        Player.setNames(start.namePlayerOneInput.value, start.namePlayerTwoInput.value);
-        updateCurrentPlayersName(start.namePlayerOneInput.value);
+    startDialog.form.addEventListener('submit', () => {
+        Player.setNames(startDialog.namePlayerOneInput.value, startDialog.namePlayerTwoInput.value);
+        updateCurrentPlayersName(startDialog.namePlayerOneInput.value);
+
+        //resets JS board
+        Gameboard.restartBoard();
+        //clears the board visually
+        clearBoard();
     });
 
     //updates text below the table which shows the active player
@@ -201,19 +172,49 @@ function ScreenController() {
     //shows dialog at the end of the game
     const showEndDialog = (value) => {
         if (value === 'its a tie') {
-            end.endMessage.textContent = 'It\'s a tie!';
+            endDialog.message.textContent = 'It\'s a tie!';
         } else {
-            end.endMessage.textContent = `Congratulations ${value}! You won this game!`;
+            endDialog.message.textContent = `Congratulations ${value}! You won this game!`;
         }
-        end.endDialog.showModal();
+        endDialog.dialog.showModal();
     }
 
     //sets click listener on a button in the dialog that pops up at the end of the game
     document.querySelector('.end-dialog button').addEventListener('click', () => {
         Gameboard.restartBoard();
         clearBoard();
-        end.endDialog.close();
+        endDialog.dialog.close();
     });
 
     return { fillCell, updateCurrentPlayersName, showEndDialog };
-}
+})();
+
+//controls game flow
+const GameController = (() => {
+
+    Gameboard.printBoard();
+
+    //executed on click on the cell
+    const playRound = (rowClicked, columnClicked) => {
+        let settingValue = Gameboard.setValue(rowClicked, columnClicked);
+
+        if (settingValue === 'X' || settingValue === 'O') {
+            alert('Cell you chose already contains \'' + settingValue + '\'. Please choose a valid cell.');
+        } else {
+            Gameboard.printBoard();
+
+            ScreenController.fillCell(rowClicked, columnClicked, Player.getActivePlayer().token);
+
+            let result = Gameboard.checkForWinner();
+            if (result !== 'not over') {
+                ScreenController.showEndDialog(result === true ? Player.getActivePlayer().name : result);
+                return 0;
+            }
+
+            Player.switchPlayer();
+            ScreenController.updateCurrentPlayersName(Player.getActivePlayer().name);
+        }
+    };
+
+    return { playRound };
+})();

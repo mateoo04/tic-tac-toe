@@ -44,16 +44,17 @@ button:hover {
     display: grid;
     /* these column and row sizes ensure the webpage is fully responsive and
     cells are of normal size on all screen sizes */
-    grid-template-columns: repeat(3, minmax(min(20vw,20vh), 1fr));
+    grid-template-columns: repeat(3, minmax(min(20vw,20vh), 150px));
     grid-template-rows: repeat(3, minmax(min(20vw,20vh), 1fr));
     padding: 12px;
+    place-content: center;
     gap: 10px;
 }
 
 .item {
     border: 1px solid #000;
     border-radius: 24px;
-    font-size: 16vh;
+    font-size: min(16vh, 16vw);
     display: flex;
     justify-content: center;
     align-items: center;
