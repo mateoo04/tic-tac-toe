@@ -214,6 +214,7 @@ function DisplayContent() {
         endDialog.showModal();
     }
 
+    //sets click listener on a button in the dialog that pops up at the end of the game
     const setPlayAgainButtonListener = (board) => {
         document.querySelector('.end-dialog button').addEventListener('click', () => {
             board.restartBoard();
