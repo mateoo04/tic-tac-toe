@@ -1,0 +1,15 @@
+.board-container{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(20vh, 150px));
+    grid-template-rows: repeat(3, minmax(20vh, 150px));
+    font-family: Arial, Helvetica, sans-serif;
+    place-content: center;
+}
+
+.item{
+    border: 1px solid #000;
+    font-size: 16vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

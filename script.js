@@ -18,6 +18,7 @@ function Gameboard() {
         else if (board[row][column] !== 0) return board[row][column];
 
         board[row][column] = player.getActivePlayer().token;
+
     };
 
     const checkForWinner = (players) => {
@@ -33,7 +34,7 @@ function Gameboard() {
             }
         }
 
-        if (board[0][0] === board[1][1] && board[1][1] === board[2][2] || board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[1][1] !== 0) {
+        if ((board[0][0] === board[1][1] && board[1][1] === board[2][2] || board[0][2] === board[1][1] && board[1][1] === board[2][0]) && board[1][1] !== 0) {
             return board[1][1];
         }
 
@@ -65,6 +66,7 @@ function GameController() {
 
     let board = Gameboard();
     let player = Player();
+    let display = DisplayContent();
 
     board.printBoard();
 
@@ -80,6 +82,9 @@ function GameController() {
             alert('Please enter a valid cell.');
         } else {
             board.printBoard();
+
+            display.fillCell(rowOfMove, colOfMove, player);
+
             let result = board.checkForWinner(player);
             if (result !== -1) {
                 alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
@@ -95,6 +100,14 @@ function GameController() {
 
     playRound();
 
+}
+
+function DisplayContent() {
+    const fillCell = (row, column, player) => {
+        document.querySelector(`.item-${row}-${column}`).textContent = player.getActivePlayer().token;
+    };
+
+    return{fillCell};
 }
 
 GameController();
