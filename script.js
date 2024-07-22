@@ -42,15 +42,15 @@ function Gameboard() {
         return -1;
     }
 
-    const restartBoard = (display)=>{
-        for(let i = 0; i < 3; i++){
-            for(let j = 0; j < 3; j++){
+    const restartBoard = () => {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
                 board[i][j] = 0;
             }
         }
     };
 
-    return { printBoard, setValue, checkForWinner,restartBoard };
+    return { printBoard, setValue, checkForWinner, restartBoard };
 }
 
 function Player() {
@@ -64,11 +64,16 @@ function Player() {
 
     const getActivePlayer = () => { return activePlayer; };
 
+    const setNames = (namePlayerOne, namePlayerTwo) => {
+        players[0].name = namePlayerOne;
+        players[1].name = namePlayerTwo;
+    };
+
     const switchPlayer = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     };
 
-    return { getActivePlayer, switchPlayer }
+    return { getActivePlayer, setNames, switchPlayer }
 }
 
 function GameController() {
@@ -91,19 +96,34 @@ function GameController() {
 
             let result = board.checkForWinner(player);
             if (result !== -1) {
-                alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
+                display.showEndDialog(player.getActivePlayer().name);
                 return 0;
             }
 
             player.switchPlayer();
+            display.updateCurrentPlayersName(player.getActivePlayer().name);
         }
     };
 
     display.setBoardClickListeners(playRound);
     display.setRestartButtonOnClickLister(board);
+    display.setStartFormListeners(player);
+    display.setPlayAgainButtonListener(board);
 }
 
 function DisplayContent() {
+
+    const startDialog = document.querySelector(".start-dialog");
+    const form = document.querySelector('.start-dialog form');
+    const namePlayerOneInput = document.querySelector('#player-1');
+    const namePlayerTwoInput = document.querySelector('#player-2');
+    const start = document.querySelector('.start');
+
+    const currentPlayersName = document.querySelector('.current-players-name');
+
+    const endDialog = document.querySelector('.end-dialog');
+    const endMessage = document.querySelector('.message');
+
     const fillCell = (row, column, value) => {
         document.querySelector(`.item-${row}-${column}`).textContent = value;
     };
@@ -118,22 +138,62 @@ function DisplayContent() {
         }
     };
 
+    //clears the board in interface
+    const clearBoard = () => {
+        for (let i = 0; i <= 2; i++) {
+            for (let j = 0; j <= 2; j++) {
+                fillCell(i, j, '');
+            }
+        }
+    };
+
     const setRestartButtonOnClickLister = (board) => {
         document.querySelector('.restart').addEventListener('click', () => {
 
             //resets JS board
             board.restartBoard(this);
 
-            //clears the board in interface
-            for (let i = 0; i <= 2; i++) {
-                for (let j = 0; j <= 2; j++) {
-                    fillCell(i,j,'');
-                }
-            }
+            clearBoard();
         });
     };
 
-    return { fillCell, setBoardClickListeners, setRestartButtonOnClickLister };
+    const setStartFormListeners = (player) => {
+
+        start.addEventListener('click', () => {
+            startDialog.showModal();
+        });
+
+        form.addEventListener('submit', () => {
+            player.setNames(namePlayerOneInput.value, namePlayerTwoInput.value);
+            updateCurrentPlayersName(namePlayerOneInput.value);
+        });
+    };
+
+    const updateCurrentPlayersName = (name) => {
+        currentPlayersName.textContent = `${name}\'s turn to play`;
+    }
+
+    const showEndDialog = (value) => {
+        if (value === -1) {
+            endMessage.textContent = 'It\'s a tie!';
+        } else {
+            endMessage.textContent = `Congratulations ${value}! You won this round!`;
+            endDialog.showModal();
+        }
+    }
+
+    const setPlayAgainButtonListener = (board) => {
+        document.querySelector('.end-dialog button').addEventListener('click', () => {
+            board.restartBoard();
+            clearBoard();
+            endDialog.close();
+        });
+    };
+
+    return {
+        fillCell, setBoardClickListeners, setRestartButtonOnClickLister,
+        setStartFormListeners, updateCurrentPlayersName, showEndDialog, setPlayAgainButtonListener
+    };
 }
 
 GameController();
