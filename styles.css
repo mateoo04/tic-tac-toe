@@ -42,8 +42,10 @@ button:hover {
 
 .board-container {
     display: grid;
-    grid-template-columns: repeat(3, minmax(20vh, 150px));
-    grid-template-rows: repeat(3, minmax(20vh, 150px));
+    /* these column and row sizes ensure the webpage is fully responsive and
+    cells are of normal size on all screen sizes */
+    grid-template-columns: repeat(3, minmax(min(20vw,20vh), 1fr));
+    grid-template-rows: repeat(3, minmax(min(20vw,20vh), 1fr));
     padding: 12px;
     gap: 10px;
 }
@@ -56,6 +58,7 @@ button:hover {
     justify-content: center;
     align-items: center;
     background-color: #F8FFE5;
+    aspect-ratio: 1/1;
 }
 
 .item:hover {
