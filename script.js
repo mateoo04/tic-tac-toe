@@ -14,7 +14,8 @@ function Gameboard() {
     };
 
     const setValue = (row, column, player) => {
-        if (board[row][column] !== 0) return -1;
+        if (row < 0 || row > 2 || column < 0 || column > 2) return -1;
+        else if (board[row][column] !== 0) return board[row][column];
 
         board[row][column] = player.getActivePlayer().token;
     };
@@ -32,7 +33,7 @@ function Gameboard() {
             }
         }
 
-        if(board[0][0] === board[1][1] && board[1][1] === board[2][2] || board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[1][1] !== 0){
+        if (board[0][0] === board[1][1] && board[1][1] === board[2][2] || board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[1][1] !== 0) {
             return board[1][1];
         }
 
@@ -71,15 +72,23 @@ function GameController() {
         let rowOfMove = prompt(`${player.getActivePlayer().name}, please type in the row in which you want to make your move:`);
         let colOfMove = prompt(`${player.getActivePlayer().name}, please type in the column in which you want to make your move:`);
 
-        board.setValue(rowOfMove, colOfMove, player);
-        board.printBoard();
-        let result = board.checkForWinner(player);
-        if (result !== -1) {
-            alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
-            return 0;
+        let settingValue = board.setValue(rowOfMove, colOfMove, player);
+
+        if (settingValue === 'X' || settingValue === 'O') {
+            alert('Cell you chose already contains \'' + settingValue + '\'. Please choose a valid cell.');
+        } else if (settingValue === -1) {
+            alert('Please enter a valid cell.');
+        } else {
+            board.printBoard();
+            let result = board.checkForWinner(player);
+            if (result !== -1) {
+                alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
+                return 0;
+            }
+
+            player.switchPlayer();
         }
 
-        player.switchPlayer();
         playRound();
 
     };
