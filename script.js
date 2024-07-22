@@ -29,7 +29,7 @@ function Gameboard() {
         }
 
         for (let i = 0; i < 3; i++) {
-            if (board[0][i] === board[1][i] && board[1][i] === board[2][i] 
+            if (board[0][i] === board[1][i] && board[1][i] === board[2][i]
                 && board[0][i] !== 0) {
                 return board[0][0];
             }
@@ -42,7 +42,15 @@ function Gameboard() {
         return -1;
     }
 
-    return { printBoard, setValue, checkForWinner }
+    const restartBoard = (display)=>{
+        for(let i = 0; i < 3; i++){
+            for(let j = 0; j < 3; j++){
+                board[i][j] = 0;
+            }
+        }
+    };
+
+    return { printBoard, setValue, checkForWinner,restartBoard };
 }
 
 function Player() {
@@ -71,36 +79,6 @@ function GameController() {
 
     board.printBoard();
 
-    // const playRoundPrompt = () => {
-    //     let rowOfMove = prompt(`${player.getActivePlayer().name}, please type in the row in which you want to make your move:`);
-    //     let colOfMove = prompt(`${player.getActivePlayer().name}, please type in the column in which you want to make your move:`);
-
-    //     let settingValue = board.setValue(rowOfMove, colOfMove, player);
-
-    //     if (settingValue === 'X' || settingValue === 'O') {
-    //         alert('Cell you chose already contains \'' + settingValue + '\'. Please choose a valid cell.');
-    //     } else if (settingValue === -1) {
-    //         alert('Please enter a valid cell.');
-    //     } else {
-    //         board.printBoard();
-
-    //         display.fillCell(rowOfMove, colOfMove, player);
-
-    //         let result = board.checkForWinner(player);
-    //         if (result !== -1) {
-    //             alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
-    //             return 0;
-    //         }
-
-    //         player.switchPlayer();
-    //     }
-
-    //     playRoundPrompt();
-
-    // };
-
-    // playRoundPrompt();
-
     const playRound = (rowClicked, columnClicked) => {
         let settingValue = board.setValue(rowClicked, columnClicked, player);
 
@@ -109,7 +87,7 @@ function GameController() {
         } else {
             board.printBoard();
 
-            display.fillCell(rowClicked, columnClicked, player);
+            display.fillCell(rowClicked, columnClicked, player.getActivePlayer().token);
 
             let result = board.checkForWinner(player);
             if (result !== -1) {
@@ -122,24 +100,40 @@ function GameController() {
     };
 
     display.setBoardClickListeners(playRound);
+    display.setRestartButtonOnClickLister(board);
 }
 
 function DisplayContent() {
-    const fillCell = (row, column, player) => {
-        document.querySelector(`.item-${row}-${column}`).textContent = player.getActivePlayer().token;
+    const fillCell = (row, column, value) => {
+        document.querySelector(`.item-${row}-${column}`).textContent = value;
     };
 
     const setBoardClickListeners = (playRound) => {
         for (let i = 0; i <= 2; i++) {
             for (let j = 0; j <= 2; j++) {
                 document.querySelector(`.item-${i}-${j}`).addEventListener('click', () => {
-                    playRound(i,j);
+                    playRound(i, j);
                 });
             }
         }
     };
 
-    return { fillCell, setBoardClickListeners };
+    const setRestartButtonOnClickLister = (board) => {
+        document.querySelector('.restart').addEventListener('click', () => {
+
+            //resets JS board
+            board.restartBoard(this);
+
+            //clears the board in interface
+            for (let i = 0; i <= 2; i++) {
+                for (let j = 0; j <= 2; j++) {
+                    fillCell(i,j,'');
+                }
+            }
+        });
+    };
+
+    return { fillCell, setBoardClickListeners, setRestartButtonOnClickLister };
 }
 
 GameController();

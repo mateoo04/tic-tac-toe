@@ -1,9 +1,37 @@
+html, body, main{
+    height: 100%;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 10px 14px;
+}
+
+button{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 18px;
+    border: none;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
 .board-container{
     display: grid;
     grid-template-columns: repeat(3, minmax(20vh, 150px));
     grid-template-rows: repeat(3, minmax(20vh, 150px));
     font-family: Arial, Helvetica, sans-serif;
-    place-content: center;
     padding: 12px;
     gap: 10px;
 }
@@ -15,4 +43,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.item:hover{
+    cursor: pointer;
 }
