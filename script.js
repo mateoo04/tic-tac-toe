@@ -29,7 +29,8 @@ function Gameboard() {
         }
 
         for (let i = 0; i < 3; i++) {
-            if (board[0][0] === board[0][1] && board[0][1] === board[0][2] && board[0][0] !== 0) {
+            if (board[0][i] === board[1][i] && board[1][i] === board[2][i] 
+                && board[0][i] !== 0) {
                 return board[0][0];
             }
         }
@@ -70,20 +71,45 @@ function GameController() {
 
     board.printBoard();
 
-    const playRound = () => {
-        let rowOfMove = prompt(`${player.getActivePlayer().name}, please type in the row in which you want to make your move:`);
-        let colOfMove = prompt(`${player.getActivePlayer().name}, please type in the column in which you want to make your move:`);
+    // const playRoundPrompt = () => {
+    //     let rowOfMove = prompt(`${player.getActivePlayer().name}, please type in the row in which you want to make your move:`);
+    //     let colOfMove = prompt(`${player.getActivePlayer().name}, please type in the column in which you want to make your move:`);
 
-        let settingValue = board.setValue(rowOfMove, colOfMove, player);
+    //     let settingValue = board.setValue(rowOfMove, colOfMove, player);
+
+    //     if (settingValue === 'X' || settingValue === 'O') {
+    //         alert('Cell you chose already contains \'' + settingValue + '\'. Please choose a valid cell.');
+    //     } else if (settingValue === -1) {
+    //         alert('Please enter a valid cell.');
+    //     } else {
+    //         board.printBoard();
+
+    //         display.fillCell(rowOfMove, colOfMove, player);
+
+    //         let result = board.checkForWinner(player);
+    //         if (result !== -1) {
+    //             alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
+    //             return 0;
+    //         }
+
+    //         player.switchPlayer();
+    //     }
+
+    //     playRoundPrompt();
+
+    // };
+
+    // playRoundPrompt();
+
+    const playRound = (rowClicked, columnClicked) => {
+        let settingValue = board.setValue(rowClicked, columnClicked, player);
 
         if (settingValue === 'X' || settingValue === 'O') {
             alert('Cell you chose already contains \'' + settingValue + '\'. Please choose a valid cell.');
-        } else if (settingValue === -1) {
-            alert('Please enter a valid cell.');
         } else {
             board.printBoard();
 
-            display.fillCell(rowOfMove, colOfMove, player);
+            display.fillCell(rowClicked, columnClicked, player);
 
             let result = board.checkForWinner(player);
             if (result !== -1) {
@@ -93,13 +119,9 @@ function GameController() {
 
             player.switchPlayer();
         }
-
-        playRound();
-
     };
 
-    playRound();
-
+    display.setBoardClickListeners(playRound);
 }
 
 function DisplayContent() {
@@ -107,7 +129,17 @@ function DisplayContent() {
         document.querySelector(`.item-${row}-${column}`).textContent = player.getActivePlayer().token;
     };
 
-    return{fillCell};
+    const setBoardClickListeners = (playRound) => {
+        for (let i = 0; i <= 2; i++) {
+            for (let j = 0; j <= 2; j++) {
+                document.querySelector(`.item-${i}-${j}`).addEventListener('click', () => {
+                    playRound(i,j);
+                });
+            }
+        }
+    };
+
+    return { fillCell, setBoardClickListeners };
 }
 
 GameController();

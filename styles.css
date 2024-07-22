@@ -4,10 +4,13 @@
     grid-template-rows: repeat(3, minmax(20vh, 150px));
     font-family: Arial, Helvetica, sans-serif;
     place-content: center;
+    padding: 12px;
+    gap: 10px;
 }
 
 .item{
     border: 1px solid #000;
+    border-radius: 24px;
     font-size: 16vh;
     display: flex;
     justify-content: center;
