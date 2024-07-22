@@ -19,7 +19,27 @@ function Gameboard() {
         board[row][column] = player.getActivePlayer().token;
     };
 
-    return { printBoard, setValue }
+    const checkForWinner = (players) => {
+        for (row of board) {
+            if (row[0] != 0 && row.every(cell => cell === row[0])) {
+                return row[0];
+            }
+        }
+
+        for (let i = 0; i < 3; i++) {
+            if (board[0][0] === board[0][1] && board[0][1] === board[0][2] && board[0][0] !== 0) {
+                return board[0][0];
+            }
+        }
+
+        if(board[0][0] === board[1][1] && board[1][1] === board[2][2] || board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[1][1] !== 0){
+            return board[1][1];
+        }
+
+        return -1;
+    }
+
+    return { printBoard, setValue, checkForWinner }
 }
 
 function Player() {
@@ -53,10 +73,15 @@ function GameController() {
 
         board.setValue(rowOfMove, colOfMove, player);
         board.printBoard();
+        let result = board.checkForWinner(player);
+        if (result !== -1) {
+            alert(`Congratulations ${player.getActivePlayer().name}! You won!`);
+            return 0;
+        }
 
         player.switchPlayer();
         playRound();
-         
+
     };
 
     playRound();
