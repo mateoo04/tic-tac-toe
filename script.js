@@ -14,7 +14,9 @@ function Gameboard() {
     };
 
     const setValue = (row, column, player) => {
-        board[row][colum] = value;
+        if (board[row][column] !== 0) return -1;
+
+        board[row][column] = player.getActivePlayer().token;
     };
 
     return { printBoard, setValue }
@@ -23,8 +25,8 @@ function Gameboard() {
 function Player() {
 
     const players = [
-        { name: 'Player 1', token: 1 },
-        { name: 'Player 2', token: 2 }
+        { name: 'Player 1', token: 'X' },
+        { name: 'Player 2', token: 'O' }
     ];
 
     let activePlayer = players[0];
@@ -48,6 +50,13 @@ function GameController() {
     const playRound = () => {
         let rowOfMove = prompt(`${player.getActivePlayer().name}, please type in the row in which you want to make your move:`);
         let colOfMove = prompt(`${player.getActivePlayer().name}, please type in the column in which you want to make your move:`);
+
+        board.setValue(rowOfMove, colOfMove, player);
+        board.printBoard();
+
+        player.switchPlayer();
+        playRound();
+         
     };
 
     playRound();
