@@ -61,11 +61,7 @@ const Gameboard = (() => {
 
     //clears all cells
     const restartBoard = () => {
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                board[i][j] = 0;
-            }
-        }
+        board = board.map((row) => row.map(() => 0));
     };
 
     return { printBoard, setValue, checkForWinner, restartBoard };
@@ -134,16 +130,13 @@ const ScreenController = (() => {
 
     //clears the board in interface
     const clearBoard = () => {
-        for (let i = 0; i <= 2; i++) {
-            for (let j = 0; j <= 2; j++) {
-                fillCell(i, j, '');
-            }
-        }
+        document.querySelectorAll('.item').forEach((item)=>{
+            item.textContent = '';
+        })
     };
 
     //restart button click listener
     document.querySelector('.restart').addEventListener('click', () => {
-
         //resets JS board
         Gameboard.restartBoard();
         //clears the board visually
