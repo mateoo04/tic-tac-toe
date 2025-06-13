@@ -1,8 +1,8 @@
 const boardElement = document.querySelector('.game__board');
 const statusElement = document.querySelector('.game__status');
 const winningLineElement = document.querySelector('.game__winning-line');
-const endDialog = document.querySelector('[data-dialog="end"]');
-const endDialogMessage = endDialog.querySelector('.dialog__message');
+const endDialog = document.querySelector('.dialog');
+const endDialogMessage = document.querySelector('.dialog__message');
 
 function renderBoard(board) {
   boardElement.querySelectorAll('.game__cell').forEach((cell) => {
@@ -41,7 +41,7 @@ function showWinner(winInfo) {
 function showTie() {
   updateStatus("It's a draw!");
   setTimeout(() => {
-    endDialogMessage.textContent = "It's a tie game!";
+    endDialogMessage.textContent = "It's a tie!";
     endDialog.showModal();
   }, 500);
 }
